@@ -1,0 +1,31 @@
+@startuml Raw_to_Save
+
+!theme toy
+
+skinparam Style strictuml
+
+actor User
+participant API
+participant LLM << Module >>
+participant Vault << Module >>
+database "Vault DB" as DB
+
+== (Stage 1) Note Processing ==
+User -> API : Send "raw note"
+API -> LLM : Forward "raw note"
+LLM -> API : Return "formatted note"
+API -> User : Return "formatted note"
+
+== (Stage 2) Approval & Storage ==
+User -> API : Send "approve"
+API -> Vault : Save(raw, formatted)
+activate Vault
+    Vault -> DB : Persist records
+    activate DB
+    DB --> Vault : Commit Success
+    deactivate DB
+    Vault --> API : Confirm Save
+deactivate Vault
+
+API -> User : Success Confirmation
+@enduml

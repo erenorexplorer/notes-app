@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.pytest_cache/
+app/vault/vaultdb.db
+AGENTS.md
+project_snapshot.md
