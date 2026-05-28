@@ -6,3 +6,4 @@ __pycache__/
 app/vault/vaultdb.db
 AGENTS.md
 project_snapshot.md
+.vscode/

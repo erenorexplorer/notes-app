@@ -1,8 +1,8 @@
 # imports
 from fastapi import FastAPI
 from pydantic import BaseModel
-import workflows
-import llm.service as llm_service
+# import workflows
+from app.llm import service as llm_service
 from typing import Optional
 import uvicorn
 
@@ -41,4 +41,4 @@ def format_raw(raw: FormatNoteRequest) -> dict:
 #       otherwise, may need to consider saving only raw first.
 
 if __name__ == "__main__":
-    uvicorn.run("api:app", reload=True) # need to clarify what this argument does
+    uvicorn.run("api:app", reload=True)
