@@ -12,9 +12,10 @@ def setup():
     note_table = """
     CREATE TABLE IF NOT EXISTS Note (
         id             TEXT PRIMARY KEY,
-        title          TEXT NOT NULL,
+        title          TEXT,
         raw_note       TEXT NOT NULL,
-        approved_note  TEXT NOT NULL,
+        approved_note  TEXT,
+        status         TEXT CHECK(status IN ('raw_saved', 'approved', 'archived')) NOT NULL DEFAULT 'raw_saved',
         created_at     DATETIME,
         updated_at     DATETIME
     );
@@ -40,23 +41,34 @@ def setup():
 
     conn.close()
 
-# assumes formatting before save
-# datetime will be formed by service layer
-# for a new note, assuming separate method later for updating
-def insert_note(id:str, title:str, raw:str, form:str, time:datetime):
-    """Create a new, complete, row in the Note table"""
+# for a new note, only raw note is required
+def insert_note(id:str, raw:str, time:datetime):
+    """Create a new row in the Note table containing id, time, and raw note"""
     command = """
-    INSERT INTO Note (id, title, raw_note, approved_note, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO Note (id, raw_note, status, created_at, updated_at)
+    VALUES (?, ?, 'raw_saved', ?, ?)
     """
     conn = sqlite3.connect(VAULT_PATH)
     try:
         with conn:
-            conn.execute(command, (id, title, raw, form, time))
+            conn.execute(command, (id, raw, time, time))
     finally:
         conn.close()
 
-
+# update approved note and status
+def approve_note(id:str, approved:str, time:datetime):
+    """Update an existing note with the approved note, change status to 'approved'"""
+    command = """
+    UPDATE Note
+    SET approved_note = ?, status = 'approved', updated_at = ?
+    WHERE id = ?
+    """
+    conn = sqlite3.connect(VAULT_PATH)
+    try:
+        with conn:
+            conn.execute(command, (approved, time, id))
+    finally:
+        conn.close()
 
 def save_link():
     """Create a new, complete row in the Link table"""

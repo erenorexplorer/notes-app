@@ -1,9 +1,9 @@
 # imports
 from fastapi import FastAPI
 from pydantic import BaseModel
-# import workflows
-from app.llm import service as llm_service
-from typing import Optional
+import app.workflows as workflows
+# from app.llm import service as llm_service
+# from typing import Optional
 import uvicorn
 
 
@@ -19,7 +19,6 @@ app = FastAPI()
 
 class FormatNoteRequest(BaseModel):
     content:str
-    # command: Optional[str] = None
 
 @app.get("/")
 def root():
@@ -30,15 +29,18 @@ def root():
 
 # 1. accept raw note
 # 2. return formatted note for approval
-@app.post("/format")
+@app.post("/notes")
 def format_raw(raw: FormatNoteRequest) -> dict:
     """Take in raw note, return formatted note for user approval"""
-    response = llm_service.format_note(raw.content)
+    response = workflows.create_formatted_draft(raw.content)
     return response
 
 # 3. register 'approve' action
-# Note: by REST standards, need to re-send both raw and approved notes from browser?
-#       otherwise, may need to consider saving only raw first.
+# pass to workflows and save for now, add return suggested links later
+@app.put("/notes/{uid}/approve")
+def approve_note(uid: str, approved_note: str):
+    response = workflows.create_link_suggestions(uid, approved_note)
+    return response
 
 if __name__ == "__main__":
     uvicorn.run("api:app", reload=True)
