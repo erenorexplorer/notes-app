@@ -56,7 +56,7 @@ def insert_note(id:str, raw:str, time:datetime):
         conn.close()
 
 # update approved note and status
-def approve_note(id:str, approved:str, time:datetime):
+def update_approved_note(id:str, approved:str, time:datetime):
     """Update an existing note with the approved note, change status to 'approved'"""
     command = """
     UPDATE Note
@@ -98,7 +98,7 @@ def select_note(uid:str) -> dict:
 
     return dict(row)
 
-def select_all_notes() -> list[dict]:
+def select_note_overviews() -> list[dict]:
     """Get title, id, later tags / summary, for all notes"""
     conn = sqlite3.connect(VAULT_PATH)
     conn.row_factory = sqlite3.Row

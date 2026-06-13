@@ -7,3 +7,5 @@ app/vault/vaultdb.db
 AGENTS.md
 project_snapshot.md
 .vscode/
+docs/
+tools/
