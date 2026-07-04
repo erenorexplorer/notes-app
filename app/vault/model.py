@@ -56,31 +56,53 @@ def insert_note(id:str, raw:str, time:datetime):
         conn.close()
 
 # update approved note and status
-def update_approved_note(id:str, approved:str, time:datetime):
-    """Update an existing note with the approved note, change status to 'approved'"""
+def update_approved_note(id: str, title: str, approved: str, time: datetime):
+    """Update an existing note with the approved note, title, and status."""
     command = """
     UPDATE Note
-    SET approved_note = ?, status = 'approved', updated_at = ?
-    WHERE id = ?
+    SET 
+        title = :title,
+        approved_note = :approved_note,
+        status = 'approved',
+        updated_at = :updated_at
+    WHERE id = :id
     """
+
+    params = {
+        "id": id,
+        "title": title,
+        "approved_note": approved,
+        "updated_at": time,
+    }
+
     conn = sqlite3.connect(VAULT_PATH)
     try:
         with conn:
-            conn.execute(command, (approved, time, id))
+            conn.execute(command, params)
     finally:
         conn.close()
 
-def save_link():
-    """Create a new, complete row in the Link table"""
-    pass
+def insert_approved_links(links: list[dict]):
+    """Take a list of dicts and save links to database
+    Each dict should contain: link_id, source_note, target_note, relation_type, created_at"""
+    
+    command = """
+    INSERT INTO Link (id, source_note, target_note, relation_type, created_at)
+    VALUES (:link_id, :source_note, :target_note, :relation_type, :created_at)
+    """
 
-# read that DTOs are typically only for inter-module or server to api. 
-# however, getting all notes / links for graph or display will return a lot of data. consider DTO / other solution?
+    conn = sqlite3.connect(VAULT_PATH)
+    try:
+        with conn:
+            conn.executemany(command, links)
+    finally:
+        conn.close()
+
 
 def select_note(uid:str) -> dict:
     """Get approved and raw note and metadata for one note"""
     command = """
-    SELECT raw_note, approved_note, created_at, updated_at
+    SELECT title, raw_note, approved_note, created_at, updated_at
     FROM Note
     WHERE id = ?
     """

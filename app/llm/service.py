@@ -23,6 +23,15 @@ def format_note(raw:str) -> str:
                     "You format rough learning notes into clean Markdown. "
                     "Preserve meaning. Do not invent facts or add new information. Keep the result concise and reviewable."
                     "Prioritize human readability and scannability."
+                    "Convert rough learning notes into clean, concise Markdown notes. "
+                    "Only output the formatted note content. "
+                    "Do not address the user. "
+                    "Do not add praise, encouragement, commentary, introductions, or conclusions. "
+                    "Do not add emojis. "
+                    "Do not invent examples, code, facts, or extra explanations. "
+                    "Preserve the original meaning and scope. "
+                    "Remove conversational framing."
+                    "Use short headings and bullets only when they improve readability."
                 ),
             },
             {
@@ -142,9 +151,22 @@ def suggest_links(approved_note: str, candidates: list[NoteOverview]) -> list[Li
     # map candidate numbers back to real note UUIDs and package into LinkSuggestion
     suggestions = []
 
+    for suggestion in parsed['links']:
+        candidate = indexed_link_candidates[suggestion['candidate_number']]
+        relation_type = suggestion['relation_type']
+        suggestions.append(
+            LinkSuggestion(
+                candidate_id=candidate.id,
+                relation_type=relation_type,
+            )
+        )
+        
+    return suggestions
 
+
+# python -m app.llm.service
 if __name__ == "__main__":
-    # from pprint import pprint
+    from pprint import pprint
 
     test_approved_note = """
     SQLite foreign keys are not always enforced by default.
@@ -171,4 +193,4 @@ if __name__ == "__main__":
 
     result = suggest_links(test_approved_note, test_candidates)
 
-    print(result)
+    pprint(result)

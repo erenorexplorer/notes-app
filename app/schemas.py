@@ -6,6 +6,7 @@ class FormatNoteRequest(BaseModel):
     Attributes:
         content: string.
     """
+    title: str
     content: str
 
 class NoteContent(BaseModel):
@@ -13,10 +14,30 @@ class NoteContent(BaseModel):
     
     Attributes:
         id: string.
+        title: string.
         content: string.
     """
     id: str
+    title: str
     content: str
+
+class FullNote(BaseModel):
+    """Full note data.
+    
+    Attributes:
+        id: string.
+        title: string.
+        raw_note: string.
+        approved_note: string.
+        created_at: string.
+        updated_at: string.
+    """
+    id: str
+    title: str
+    raw_note: str
+    approved_note: str
+    created_at: str
+    updated_at: str
 
 class NoteOverview(BaseModel):
     """Metadata for note overview and link candidate suggestions.
