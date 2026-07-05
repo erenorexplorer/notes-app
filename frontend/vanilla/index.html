@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notes</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header>
+    <h1>Notes Workflow Tester</h1>
+    <p>A basic frontend for testing the notes API.</p>
+  </header>
+
+  <main>
+    <!-- View 1: Home -->
+    <section id="home-view" class="view">
+      <div class="section-header">
+        <h2>Saved Notes</h2>
+        <button id="new-note-button">New Note</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Updated</th>
+            <th>ID</th>
+          </tr>
+        </thead>
+        <tbody id="notes-table-body">
+          <!-- JavaScript will render rows here -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- View 2: New Note -->
+    <section id="new-note-view" class="hidden view">
+      <h2>New Note</h2>
+
+      <form id="new-note-form">
+        <label for="note-title">Title</label>
+        <input id="note-title" name="title" type="text" />
+
+        <label for="note-content">Content</label>
+        <textarea id="note-content" name="content" rows="12"></textarea>
+
+        <div class="button-row">
+          <button type="button" id="cancel-new-note-button">Cancel</button>
+          <button type="submit">Submit</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- View 3: Review Draft -->
+    <section id="review-draft-view" class="hidden view">
+      <h2>Review Draft</h2>
+
+      <form id="review-draft-form">
+        <label for="draft-title">Title</label>
+        <input id="draft-title" name="title" type="text" />
+
+        <label for="draft-content">Formatted Content</label>
+        <textarea id="draft-content" name="content" rows="16"></textarea>
+
+        <div class="button-row">
+          <button type="button" id="back-to-new-note-button">Back</button>
+          <button type="submit">Approve Draft</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- View 4: Review Links -->
+    <section id="review-links-view" class="hidden view">
+      <h2>Review Suggested Links</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Candidate ID</th>
+            <th>Relation Type</th>
+            <th>Reject</th>
+          </tr>
+        </thead>
+        <tbody id="links-table-body">
+          <!-- JavaScript will render rows here -->
+        </tbody>
+      </table>
+
+      <div class="button-row">
+        <button id="skip-links-button">Skip</button>
+        <button id="approve-links-button">Approve Remaining Links</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
