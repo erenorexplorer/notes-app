@@ -1,4 +1,4 @@
-from app.llm import service as llm_service
+from app.dependencies import get_llm_service
 from app.vault import service as vault_service
 from app.schemas import LinkSuggestion
 # ====== File Notes ======
@@ -7,7 +7,7 @@ from app.schemas import LinkSuggestion
 # - May later be split into separate files and given their own directory
 #
 # ========================
-
+llm_service = get_llm_service()
 
 def create_formatted_draft(title: str, raw_note: str) -> dict:
     """Workflow:
@@ -25,11 +25,18 @@ def create_link_suggestions(uid:str, title: str, approved_note: str) -> list[Lin
         - update note status to approved in vault
         - later: get suggested links from llm service"""
     # save approved note
-    # dev note: currently directly saves user-entered title, future feature should add duplicate checks and LLM refinement here.
+    # dev note: currently directly saves user-entered title, future feature should add LLM suggestion.
     vault_service.save_approved_note(uid, title, approved_note)
     
     # create link suggestions
     candidates = vault_service.get_note_overviews()
+
+    # temporary self-link prevention guard
+    candidates = [
+        candidate for candidate in candidates
+        if candidate.id != uid
+    ]
+
     result = llm_service.suggest_links(approved_note, candidates)
     return result
 

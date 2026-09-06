@@ -3,8 +3,6 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import app.workflows as workflows
 import app.vault.service as vault_service
-# from app.llm import service as llm_service
-# from typing import Optional
 import uvicorn
 from app.schemas import FormatNoteRequest, NoteContent, LinkSuggestion, NoteOverview, FullNote
 
@@ -42,7 +40,7 @@ def approve_note(approved_note: NoteContent) -> list[LinkSuggestion]:
     response = workflows.create_link_suggestions(approved_note.id, approved_note.title, approved_note.content)
     return response
 
-# return overviw of all notes
+# return overview of all notes
 @app.get("/notes")
 def get_notes() -> list[NoteOverview]:
     return vault_service.get_note_overviews()

@@ -3,9 +3,12 @@ __pycache__/
 *.pyc
 .env
 .pytest_cache/
-app/vault/vaultdb.db
+backend/app/vault/vaultdb.db
 AGENTS.md
 project_snapshot.md
 .vscode/
 docs/
 tools/
+*.db
+*.sqlite
+*.sqlite3
