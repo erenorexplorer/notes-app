@@ -5,17 +5,23 @@ import app.workflows as workflows
 import app.vault.service as vault_service
 import uvicorn
 from app.schemas import FormatNoteRequest, NoteContent, LinkSuggestion, LinkSuggestionForReview, NoteOverview, FullNote, GraphData, GraphNode, GraphEdge
+from fastapi.middleware.cors import CORSMiddleware
 
 
-# ================= tmp for testing/ =================
-
-from app.vault.model import setup
-setup()
-
-# ================= \tmp for testing =================
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def root():
@@ -36,7 +42,7 @@ def format_raw(raw: FormatNoteRequest) -> NoteContent:
 # pass to workflows and save for now, add return suggested links later
 # note: uid known from url but currently unused
 @app.put("/notes/{uid}/approve")
-def approve_note(approved_note: NoteContent) -> list[LinkSuggestionForReview]:
+def approve_note(uid: str, approved_note: NoteContent) -> list[LinkSuggestionForReview]:
     response = workflows.create_link_suggestions(approved_note.id, approved_note.title, approved_note.content)
     return response
 

@@ -1,0 +1,3 @@
+.root[data-variant="transparent"]:active {
+  background-color: var(--mantine-color-dark-4);
+}

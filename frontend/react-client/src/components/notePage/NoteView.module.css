@@ -1,0 +1,52 @@
+.markdown {
+  line-height: 1.7;
+}
+
+.markdown h1 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.markdown h2 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown p {
+  margin-block: 0.75rem;
+}
+
+.markdown ul,
+.markdown ol {
+  padding-left: 1.5rem;
+}
+
+.markdown code {
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  background: var(--mantine-color-dark-7);
+}
+
+.markdown pre {
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: var(--mantine-radius-sm);
+  background: var(--mantine-color-dark-9);
+}
+
+.markdown pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.markdown blockquote {
+  margin-inline: 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--mantine-color-dark-4);
+  color: var(--mantine-color-dimmed);
+}

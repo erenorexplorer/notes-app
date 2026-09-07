@@ -1,0 +1,11 @@
+/* src/TextInput.module.css */
+.input {
+  /* Base State */
+  background-color: var(--mantine-color-dark-9);
+  border: 1px solid var(--mantine-color-dark-6);
+  color: var(--mantine-color-dark-0);
+}
+
+.input:focus {
+  border-color: var(--mantine-color-dark-4);
+}
