@@ -1,6 +1,6 @@
 from app.dependencies import get_llm_service
 from app.vault import service as vault_service
-from app.schemas import LinkSuggestion
+from app.schemas import LinkSuggestion, LinkSuggestionForReview
 # ====== File Notes ======
 #
 # - Orchestrator for cross-module functionalities
@@ -20,7 +20,7 @@ def create_formatted_draft(title: str, raw_note: str) -> dict:
     result = {"id": uid, "title": title, "content": formatted}
     return result
 
-def create_link_suggestions(uid:str, title: str, approved_note: str) -> list[LinkSuggestion]:
+def create_link_suggestions(uid:str, title: str, approved_note: str) -> list[LinkSuggestionForReview]:
     """Workflow:
         - update note status to approved in vault
         - later: get suggested links from llm service"""
@@ -37,7 +37,22 @@ def create_link_suggestions(uid:str, title: str, approved_note: str) -> list[Lin
         if candidate.id != uid
     ]
 
-    result = llm_service.suggest_links(approved_note, candidates)
+    suggestions = llm_service.suggest_links(approved_note, candidates)
+
+    candidate_by_id = {
+        candidate.id: candidate
+        for candidate in candidates
+    }
+
+    result = [
+        LinkSuggestionForReview(
+            candidate_id=suggestion.candidate_id,
+            candidate_title=candidate_by_id[suggestion.candidate_id].title,
+            relation_type=suggestion.relation_type,
+        )
+        for suggestion in suggestions
+    ]
+
     return result
 
 def approve_links(uid:str, approved_links: list[LinkSuggestion]):

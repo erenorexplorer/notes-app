@@ -1,7 +1,7 @@
 from datetime import datetime
 import uuid
 from app.vault import model
-from app.schemas import FullNote, NoteOverview, LinkSuggestion
+from app.schemas import FullNote, NoteOverview, LinkSuggestion, GraphData, GraphNode, GraphEdge
 
 # future: function to return large DTO of whole vault structure
 # i.e. stitch together notes and links.
@@ -59,3 +59,32 @@ def save_approved_links(uid:str, approved_links:list[LinkSuggestion]):
         for link in approved_links
     ]
     model.insert_approved_links(link_rows)
+
+def get_graph_data() -> GraphData:
+    node_data = model.select_note_previews()
+    link_data = model.select_all_links()
+    valid_nodes = {node['id'] for node in node_data}
+
+    print(node_data)
+    graph_data = GraphData(
+        nodes = [
+            GraphNode(
+                id=node['id'],
+                title=node['title'],
+                preview=node['approved_note']
+            )
+            for node in node_data
+        ],
+        links = [
+            GraphEdge(
+                id=link['id'],
+                source_id=link['source_note'],
+                target_id=link['target_note'],
+                relation_type=link['relation_type']
+            )
+            for link in link_data 
+            if link['source_note'] in valid_nodes and link['target_note'] in valid_nodes
+        ]
+    )
+
+    return graph_data

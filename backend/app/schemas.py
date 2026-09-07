@@ -60,3 +60,30 @@ class LinkSuggestion(BaseModel):
     """
     candidate_id: str
     relation_type: str
+
+class LinkSuggestionForReview(BaseModel):
+    """Link suggestion enriched with candidate data for user review.
+
+    Attributes:
+        candidate_id: ID of the suggested candidate note.
+        candidate_title: Title of the suggested candidate note.
+        relation_type: Type of relationship being suggested.
+    """
+    candidate_id: str
+    candidate_title: str
+    relation_type: str
+
+class GraphNode(BaseModel):
+    id: str
+    title: str
+    preview: str
+
+class GraphEdge(BaseModel):
+    id: str
+    source_id: str
+    target_id: str
+    relation_type: str
+
+class GraphData(BaseModel):
+    nodes: list[GraphNode]
+    links: list[GraphEdge]

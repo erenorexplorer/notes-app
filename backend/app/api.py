@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import app.workflows as workflows
 import app.vault.service as vault_service
 import uvicorn
-from app.schemas import FormatNoteRequest, NoteContent, LinkSuggestion, NoteOverview, FullNote
+from app.schemas import FormatNoteRequest, NoteContent, LinkSuggestion, LinkSuggestionForReview, NoteOverview, FullNote, GraphData, GraphNode, GraphEdge
 
 
 # ================= tmp for testing/ =================
@@ -36,7 +36,7 @@ def format_raw(raw: FormatNoteRequest) -> NoteContent:
 # pass to workflows and save for now, add return suggested links later
 # note: uid known from url but currently unused
 @app.put("/notes/{uid}/approve")
-def approve_note(approved_note: NoteContent) -> list[LinkSuggestion]:
+def approve_note(approved_note: NoteContent) -> list[LinkSuggestionForReview]:
     response = workflows.create_link_suggestions(approved_note.id, approved_note.title, approved_note.content)
     return response
 
@@ -64,6 +64,11 @@ def approve_links(uid:str, approved_links: list[LinkSuggestion]):
     workflows.approve_links(uid, approved_links)
 
 # ====== /Link Creation ======
+
+@app.get("/graph")
+def get_graph() -> GraphData:
+    return vault_service.get_graph_data()
+
 
 # python -m uvicorn app.api:app --reload
 if __name__ == "__main__":

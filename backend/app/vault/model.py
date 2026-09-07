@@ -23,15 +23,15 @@ def setup():
 
     link_table = """
     CREATE TABLE IF NOT EXISTS Link (
-    id               TEXT PRIMARY KEY,
-    source_note      TEXT NOT NULL,
-    target_note      TEXT NOT NULL,
-    relation_type    TEXT,
-    created_at       DATETIME,
+        id               TEXT PRIMARY KEY,
+        source_note      TEXT NOT NULL,
+        target_note      TEXT NOT NULL,
+        relation_type    TEXT,
+        created_at       DATETIME,
 
-    FOREIGN KEY (source_note) REFERENCES Note (id) ON DELETE CASCADE,
-    FOREIGN KEY (target_note) REFERENCES Note (id) ON DELETE CASCADE,
-    CHECK (source_note != target_note)
+        FOREIGN KEY (source_note) REFERENCES Note (id) ON DELETE CASCADE,
+        FOREIGN KEY (target_note) REFERENCES Note (id) ON DELETE CASCADE,
+        CHECK (source_note != target_note)
     );
     """    
     with conn:
@@ -134,13 +134,57 @@ def select_note_overviews() -> list[dict]:
 
     return [dict(r) for r in rows]
 
-def get_link(uuid:str):
-    """Get all links for a specific note"""
-    pass
+def select_note_previews() -> list[dict]:
+    """Return note data used to build graph previews.
 
-def get_all_links():
-    """Get source / target note, id, relation type, for all links, used to build visual view"""
-    pass
+    Returns:
+        list[dict]: A list of note rows. Each dictionary contains:
+            - id (str): Unique note ID.
+            - title (str): Note title.
+            - approved_note (str): Approved note content used for the preview.
+    """
+
+    conn = sqlite3.connect(VAULT_PATH)
+    conn.row_factory = sqlite3.Row
+
+    try:
+        with conn:
+            cur = conn.execute(
+                """
+                SELECT id, title, approved_note
+                FROM Note
+                WHERE status = 'approved'
+                """
+            )
+            rows = cur.fetchall()
+    finally:
+        conn.close()
+
+    return [dict(r) for r in rows]
+
+
+def select_all_links() -> list[dict]:
+    """Return all links from the vault.
+
+    Returns:
+        list[dict]: A list of link rows. Each dictionary contains:
+            - id (str): Unique link ID.
+            - source_note (str): Source note ID.
+            - target_note (str): Target note ID.
+            - relation_type (str): Relationship type between the notes.
+    """
+    conn = sqlite3.connect(VAULT_PATH)
+    conn.row_factory = sqlite3.Row
+
+    try:
+        with conn:
+            cur = conn.execute("SELECT id, source_note, target_note, relation_type FROM Link")
+            rows = cur.fetchall()
+    finally:
+        conn.close()
+
+    return [dict(r) for r in rows]
+
 
 # if __name__ == "__main__":
 #     setup()

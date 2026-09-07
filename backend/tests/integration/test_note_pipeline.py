@@ -94,8 +94,9 @@ def test_create_approve_link_workflow(test_db, fake_llm):
     suggested_links = approve_note_response.json()
     assert isinstance(suggested_links, list)
     assert len(suggested_links) == 1
-    assert set(suggested_links[0].keys()) == {'candidate_id', 'relation_type'}
+    assert set(suggested_links[0].keys()) == {'candidate_id', 'candidate_title', 'relation_type'}
     assert suggested_links[0]['candidate_id'] == candidate_id
+    assert suggested_links[0]['candidate_title'] == candidate_note['title']
     assert suggested_links[0]['relation_type'] == 'related'
 
     # ========== /APPROVE_NOTE ENDPOINT ==========
